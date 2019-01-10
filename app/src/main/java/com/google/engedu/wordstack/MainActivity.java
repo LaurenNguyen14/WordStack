@@ -81,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
         verticalLayout.addView(stackedLayout, 3);
 
         word1LinearLayout = findViewById(R.id.word1);
-        //word1LinearLayout.setOnTouchListener(new TouchListener());
+        word1LinearLayout.setOnTouchListener(new TouchListener());
         word1LinearLayout.setOnDragListener(new DragListener());
         word2LinearLayout = findViewById(R.id.word2);
-        //word2LinearLayout.setOnTouchListener(new TouchListener());
+        word2LinearLayout.setOnTouchListener(new TouchListener());
         word2LinearLayout.setOnDragListener(new DragListener());
 
     }
@@ -165,32 +165,33 @@ public class MainActivity extends AppCompatActivity {
 
         int pointer1= 0, pointer2 = 0;
 
-        String scrambleLetter = "";
+        StringBuilder scrambledLetter = new StringBuilder();
+
+        //String scrambleLetter = "";
         while(pointer1 < word1.length() && pointer2 < word2.length()){
             int whichWord = random.nextInt(2) +1;
             if(whichWord==1){
-                scrambleLetter += word1.charAt(pointer1);
+                scrambledLetter.append(word1.charAt(pointer1));
                 pointer1++;
             }
             else if(whichWord==2){
-                scrambleLetter += word2.charAt(pointer2);
+                scrambledLetter.append(word2.charAt(pointer2));
                 pointer2++;
             }
-
         }
 
         if(pointer1 < word1.length()){
-            scrambleLetter += word1.substring(pointer1,word1.length());
+            scrambledLetter.append(word1, pointer1, word1.length());
         }
         else if(pointer2 < word2.length()){
-            scrambleLetter += word2.substring(pointer2,word2.length());
+            scrambledLetter.append(word2, pointer2, word2.length());
         }
 
-        Log.i("WordStack", word1 + " + " + word2 + " = " + scrambleLetter);
-        messageBox.setText(scrambleLetter);
+        Log.i("WordStack", word1 + " + " + word2 + " = " + scrambledLetter.toString());
+        messageBox.setText(scrambledLetter.toString());
 
-        for (int i = scrambleLetter.length()-1; i>=0; i--){
-            stackedLayout.push(new LetterTile(this, scrambleLetter.charAt(i)));
+        for (int i = scrambledLetter.toString().length()-1; i>=0; i--){
+            stackedLayout.push(new LetterTile(this, scrambledLetter.toString().charAt(i)));
         }
 
         return true;
