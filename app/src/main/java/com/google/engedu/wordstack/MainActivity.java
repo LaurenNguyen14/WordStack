@@ -45,9 +45,16 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> words = new ArrayList<>();
     private Random random = new Random();
     private StackedLayout stackedLayout;
+
+    private Stack<LetterTile> placedTiles = new Stack();
+
     private String word1, word2;
 
-    List<LetterTile> letterTileList = new ArrayList<>();
+    private ViewGroup word1LinearLayout;
+    private ViewGroup word2LinearLayout;
+
+
+   // StackedLayout letterTileStack;
 
 
     @Override
@@ -73,15 +80,12 @@ public class MainActivity extends AppCompatActivity {
         stackedLayout = new StackedLayout(this);
         verticalLayout.addView(stackedLayout, 3);
 
-        View word1LinearLayout = findViewById(R.id.word1);
-        word1LinearLayout.setOnTouchListener(new TouchListener());
-        //word1LinearLayout.setOnDragListener(new DragListener());
-        View word2LinearLayout = findViewById(R.id.word2);
-        word2LinearLayout.setOnTouchListener(new TouchListener());
-        //word2LinearLayout.setOnDragListener(new DragListener());
-
-        // instantiate letter tile
-
+        word1LinearLayout = findViewById(R.id.word1);
+        //word1LinearLayout.setOnTouchListener(new TouchListener());
+        word1LinearLayout.setOnDragListener(new DragListener());
+        word2LinearLayout = findViewById(R.id.word2);
+        //word2LinearLayout.setOnTouchListener(new TouchListener());
+        word2LinearLayout.setOnDragListener(new DragListener());
 
     }
 
@@ -96,11 +100,9 @@ public class MainActivity extends AppCompatActivity {
                     TextView messageBox = (TextView) findViewById(R.id.message_box);
                     messageBox.setText(word1 + " " + word2);
                 }
-                /**
-                 **
-                 **  YOUR CODE GOES HERE
-                 **
-                 **/
+
+                placedTiles.push(tile);
+
                 return true;
             }
             return false;
@@ -136,11 +138,9 @@ public class MainActivity extends AppCompatActivity {
                         TextView messageBox = (TextView) findViewById(R.id.message_box);
                         messageBox.setText(word1 + " " + word2);
                     }
-                    /**
-                     **
-                     **  YOUR CODE GOES HERE
-                     **
-                     **/
+
+                    placedTiles.push(tile);
+
                     return true;
             }
             return false;
@@ -148,6 +148,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onStartGame(View view) {
+        word1LinearLayout.removeAllViews();
+        word2LinearLayout.removeAllViews();
+
+
+        stackedLayout.clear();
         TextView messageBox = (TextView) findViewById(R.id.message_box);
         messageBox.setText("Game started");
 
@@ -184,21 +189,23 @@ public class MainActivity extends AppCompatActivity {
         Log.i("WordStack", word1 + " + " + word2 + " = " + scrambleLetter);
         messageBox.setText(scrambleLetter);
 
-        for (char c : scrambleLetter.toCharArray()){
-            letterTileList.add(new LetterTile(this, c));
+        for (int i = scrambleLetter.length()-1; i>=0; i--){
+            stackedLayout.push(new LetterTile(this, scrambleLetter.charAt(i)));
         }
-
-
 
         return true;
     }
 
     public boolean onUndo(View view) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
-        return true;
+        LetterTile tile = null;
+        if(!placedTiles.empty()) {
+            tile = placedTiles.pop();
+            tile.moveToViewGroup(stackedLayout);
+            return true;
+        }
+
+        return false;
     }
+
+
 }

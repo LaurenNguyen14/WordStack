@@ -25,25 +25,33 @@ public class StackedLayout extends LinearLayout {
 
     private Stack<View> tiles = new Stack();
 
+
     public StackedLayout(Context context) {
         super(context);
     }
 
     public void push(View tile) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        if (!tiles.empty()) {
+            removeView(tiles.peek());
+        }
+
+        tiles.push(tile);
+
+        addView(tiles.peek());
     }
 
     public View pop() {
         View popped = null;
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+
+        if (!tiles.empty()) {
+            popped = tiles.pop();
+            removeView(popped);
+            if (!tiles.empty()) {
+                addView(tiles.peek());
+            }
+        }
+
+
         return popped;
     }
 
@@ -56,10 +64,8 @@ public class StackedLayout extends LinearLayout {
     }
 
     public void clear() {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        tiles.clear();
+        removeAllViews();
     }
+
 }
